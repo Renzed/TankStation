@@ -7,7 +7,7 @@
     <title>{% block title %}TankStation{% endblock %}</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-primary mb-4" data-bs-theme="dark">
     <div class="container-lg">
         <a class="navbar-brand" href="{% url 'Home' %}">TankStation</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
@@ -21,6 +21,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'evenementen:Evenementen home' %}">Tanktiviteiten</a>
                 </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">{{ user.get_username }}, stap uit</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </div>
