@@ -1,18 +1,52 @@
 {% extends 'base.html' %}
 
+{% load humanize %}
+
 {% block content %}
     <div class="row">
-        <div class="col-9">
-            <h1>{{ ttvt.naam }}</h1>
-            <h4>Op {{ ttvt.wanneer }}</h4>
+        <div class="col-2">
+            <figure class="figure" style="width: 100%;">
+                <img src="/{{ ttvt.plaatje }}" class="img-responsive figure-img" style="width: inherit; object-fit: contain;">
+            </figure>
         </div>
-        <div class="col-3" style="display: flex; align-items: flex-end;">
-            <form action="{% url 'evenementen:Inschrijven' ttvt.id %}" method="post">{% csrf_token %}
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Opmerking" name="opmerking">
-                    <button class="btn btn-primary" type="submit">Inschrijven!</button>
+        <div class="col-7">
+            <div class="row">
+                <span class="border-bottom">
+                    <h1 class="display-5">{{ ttvt.naam }}</h1>
+                    <span class="lead"><i class="bi-calendar"></i> {{ ttvt.wanneer }}</span>
+                    <span class="lead ms-4"><i class="bi-currency-euro"></i>{{ ttvt.prijs }}</span>
+                    {% if nu > ttvt.sluiting %}
+                        <span class="lead ms-4"><i class="bi-lock"></i> {{ ttvt.sluiting|naturaltime }}</span>
+                    {% else %}
+                        <span class="lead ms-4"><i class="bi-unlock"></i> {{ ttvt.sluiting|naturaltime }}</span>
+                    {% endif %}
+                    <span class="lead ms-4"><i class="bi-fuel-pump"></i> {{ ttvt.verantwoordelijke }}</span>
+                </span>
+            </div>
+            <div class="row mt-1">
+                <p>{{ ttvt.beschrijving }}</p>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="row" style="text-align:right;">
+                <p>{{ deelnemers|length }}<span class="text-muted"> / {{ ttvt.max_inschrijvingen }}</span></p>
+            </div>
+            <div class="row">
+            {% if inschrijving_id > 0 %}
+                <div class="input-group">
+                    <a class="btn btn-danger" href="{% url 'evenementen:Uitschrijven' ttvt.id inschrijving_id %}"
+                        style="width:100%;">
+                        Uitschrijven
+                    </a>
                 </div>
-            </form>
+            {% else %}
+                <form action="{% url 'evenementen:Inschrijven' ttvt.id %}" method="post">{% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Opmerking" name="opmerking">
+                        <button class="btn btn-primary" type="submit">Inschrijven!</button>
+                    </div>
+                </form>
+                {% endif %}</div>
         </div>
     </div>
     <div class="row">
@@ -22,16 +56,13 @@
                 <tr>
                     <th scope="col" class="col-sm-auto">Naam</th>
                     <th scope="col" class="col-lg-auto">Opmerking</th>
-                    <th scope="col" class="col-1">Uitschrijven</th>
                 </tr>
             </thead>
             <tbody>
-            {% for inschrijving in deelnemers %}
-                <tr><td>{{ inschrijving.plaatser }}</td><td>{{ inschrijving.opmerkingen }}</td>
-                        <td><a class="btn btn-primary"
-                               href="{% url 'evenementen:Uitschrijven' ttvt.id inschrijving.id %}">
-                            Verwijderen
-                        </a></td>
+                {% for inschrijving in deelnemers %}
+                    <tr>
+                        <td>{{ inschrijving.plaatser }}</td>
+                        <td>{{ inschrijving.opmerkingen }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

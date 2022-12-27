@@ -1,12 +1,50 @@
 {% extends 'base.html' %}
 
+{% load humanize %}
+
 {% block content %}
     {% if komende_tanktiviteiten %}
-        <ul>
-            {% for ttvt in komende_tanktiviteiten %}
-                <li><a href="{% url 'evenementen:Tanktiviteit detail' ttvt.id %}">{{ttvt.naam}}</a></li>
-            {% endfor %}
-        </ul>
+        {% for ttvt, ins in data %}
+            <div class="row border-top">
+                <div class="col-2">
+                    <figure class="figure" style="width:100%;">
+                        <img class="figure-img" src="/{{ ttvt.plaatje }}" style="width:inherit;object-fit:contain;">
+                    </figure>
+                </div>
+                <div class="col-10">
+                    <div class="row">
+                        <h3><a href="{% url 'evenementen:Tanktiviteit detail' ttvt.id %}" style="text-decoration:none;">{{ttvt.naam}}</a></h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="row">
+                                <span class="lead"><i class="bi-calendar"></i> {{ ttvt.wanneer }}</span>
+                            </div>
+                            <div class="row">
+                                <span class="lead"><i class="bi-currency-euro"></i>{{ ttvt.prijs }}</span>
+                            </div>
+                            <div class="row">
+                                {% if nu > ttvt.sluiting %}
+                                    <span class="lead"><i class="bi-lock"></i> {{ ttvt.sluiting|naturaltime }}</span>
+                                {% else %}
+                                    <span class="lead"><i class="bi-unlock"></i> {{ ttvt.sluiting|naturaltime }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <span class="lead"><i class="bi-fuel-pump"></i> {{ ttvt.verantwoordelijke }}</span>
+                            </div>
+                            {% if ins %}
+                                <div class="row">
+                                    <span class="lead"><i class="bi-person-check"></i> Ingeschreven!</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-6">
+                            {{ ttvt.beschrijving }}
+                        </div>
+                    </div>
+            </div>
+        {% endfor %}
     {% else %}
         <h1>Er komt niks aan :(</h1>
     {% endif %}
