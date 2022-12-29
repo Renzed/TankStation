@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'evenementen.apps.EvenementenConfig',
     'TankStation',
+    'geldzaken.apps.GeldzakenConfig',
     'django.contrib.humanize'
 ]
 

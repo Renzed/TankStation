@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from django.http import HttpResponse, Http404, HttpResponseRedirect, FileResponse
+from django.http import HttpResponse, Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -22,10 +22,6 @@ def index(request):
         'data': zip(komende_tanktiviteiten, ingeschreven)
     }
     return render(request, 'main.html', context)
-
-
-def test(request):
-    return HttpResponse("yess")
 
 
 @login_required
@@ -70,5 +66,15 @@ def inschrijven(request, tanktiviteit_id):
 def uitschrijven(request, tanktiviteit_id, inschrijving_id):
     # TODO: zorgen dat ie de inschrijving uit het lijstje van account gelinkte inschrijvingen vist
     inschrijving = get_object_or_404(Inschrijving, pk=inschrijving_id)
-    inschrijving.delete()
-    return HttpResponseRedirect(reverse('evenementen:Tanktiviteit detail', args=(tanktiviteit_id,)))
+    if request.user == inschrijving.plaatser:
+        inschrijving.delete()
+        return HttpResponseRedirect(reverse('evenementen:Tanktiviteit detail', args=(tanktiviteit_id,)))
+    else:
+        return HttpResponse('Leuk geprobeerd hackermeneer', status=401)
+
+
+@login_required
+def geweest(request, pagesize, page):
+    geweeste_ttvt = list(Tanktiviteit.objects.filter(wanneer__lte=timezone.now())[((page-1)*pagesize):((page*pagesize)-1)].values())
+    # return HttpResponse(geweeste_ttvt)
+    return JsonResponse(geweeste_ttvt, safe=False)

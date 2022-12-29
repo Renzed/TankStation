@@ -15,6 +15,7 @@ class Tanktiviteit(models.Model):
     wanneer = models.DateTimeField("Tanktiviteit moment")
     plaatje = models.ImageField(upload_to="images/", default="images/tank.jpg")
     max_inschrijvingen = models.PositiveSmallIntegerField(default=76)
+    tankrekening = models.BooleanField(default=True)
 
 
 class Inschrijving(models.Model):

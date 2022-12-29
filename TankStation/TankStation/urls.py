@@ -23,6 +23,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('tanktiviteiten/', include('evenementen.urls')),
+    path('centjes/', include('geldzaken.urls')),
     path('', views.index, name='Home'),
     path('accounts/', include('django.contrib.auth.urls'))
 ]
