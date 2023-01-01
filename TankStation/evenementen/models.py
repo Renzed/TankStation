@@ -21,4 +21,4 @@ class Tanktiviteit(models.Model):
 class Inschrijving(models.Model):
     plaatser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="inschrijvingen", on_delete=models.CASCADE, null=True)
     tanktiviteit = models.ForeignKey(Tanktiviteit, related_name="inschrijvingen", on_delete=models.CASCADE)
-    opmerkingen = models.CharField(max_length=140)
+    opmerkingen = models.CharField(max_length=140,null=True)

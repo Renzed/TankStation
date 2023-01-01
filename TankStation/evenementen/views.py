@@ -19,7 +19,8 @@ def index(request):
     context = {
         'komende_tanktiviteiten': komende_tanktiviteiten,
         'ingeschreven': ingeschreven,
-        'data': zip(komende_tanktiviteiten, ingeschreven)
+        'data': zip(komende_tanktiviteiten, ingeschreven),
+        'nu': timezone.now()
     }
     return render(request, 'main.html', context)
 
@@ -66,7 +67,7 @@ def inschrijven(request, tanktiviteit_id):
 def uitschrijven(request, tanktiviteit_id, inschrijving_id):
     # TODO: zorgen dat ie de inschrijving uit het lijstje van account gelinkte inschrijvingen vist
     inschrijving = get_object_or_404(Inschrijving, pk=inschrijving_id)
-    if request.user == inschrijving.plaatser:
+    if request.user == inschrijving.plaatser and inschrijving.tanktiviteit.wanneer > timezone.now():
         inschrijving.delete()
         return HttpResponseRedirect(reverse('evenementen:Tanktiviteit detail', args=(tanktiviteit_id,)))
     else:
