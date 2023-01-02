@@ -14,6 +14,7 @@ def index(request):
         'ver_datum': tr.geverifieerd_op,
         'saldo': tr.saldo(),
         'uit gaan geven': tr.uit_gaan_geven(),
-        'evs': list(tr.inschrijvingen(True).values()),
+        'evs': tr.inschrijvingen(True),
+        'opladingen': tr.opladingen.all()
     }
-    return JsonResponse(context)
+    return render(request, 'index.html', context)

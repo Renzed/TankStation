@@ -6,7 +6,7 @@ from django.utils import timezone
 
 
 class TankRekening(models.Model):
-    eigenaar = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
+    eigenaar = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True, related_name='rekening')
     geverifieerd_saldo = models.DecimalField(max_digits=7, decimal_places=2)
     geverifieerd_op = models.DateTimeField()
 
@@ -35,3 +35,9 @@ class TankRekening(models.Model):
             return self.eigenaar.inschrijvingen.filter(tanktiviteit__tankrekening=True)
         else:
             return self.eigenaar.inschrijvingen.all()
+
+
+class Oplading(models.Model):
+    tankrekening = models.ForeignKey(TankRekening, on_delete=models.CASCADE, related_name='opladingen')
+    bedrag = models.DecimalField(max_digits=7,decimal_places=2)
+    wanneer = models.DateTimeField(auto_now_add=True)
